@@ -4,7 +4,7 @@ import com.comcast.ip4s.{IpAddress, Ipv4Address}
 import dird.protobuf.cidrs.GeoIPList
 
 import java.io.FileInputStream
-import java.net.URL
+import java.net.URI
 import scala.util.Using
 
 type IpSetRules = Map[String, Seq[Array[Byte]]]
@@ -13,14 +13,14 @@ object IpSetRulesStore:
   private val geoIpDataUrl = "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat"
   private val geoIpLocalDataPath = "data/geoip.dat"
   def load(useLocalDataFile: Boolean): IpSetRules =
-    val geoIPList = Using.resource(if useLocalDataFile then FileInputStream(geoIpLocalDataPath) else URL(geoIpDataUrl).openStream) {
+    val geoIPList = Using.resource(if useLocalDataFile then FileInputStream(geoIpLocalDataPath) else URI.create(geoIpDataUrl).toURL.openStream) {
       in => GeoIPList.parseFrom(in)
     }
     toIpSetRules(geoIPList)
 
   private def toIpSetRules(geoIPList: GeoIPList): IpSetRules =
     val geoIpSetByTag = geoIPList.entry.map { geoIp =>
-      // the geoip data doesn't use this field but we still check it
+      // the geoip data doesn't use this field, but we still check it
       // to make sure this behavior is still the same in the future
       assert(!geoIp.inverseMatch)
       geoIp.countryCode.toLowerCase -> geoIp.cidr
@@ -31,7 +31,7 @@ object IpSetRulesStore:
     // TODO: use a strict version of `mapValues` in the future Scala version
     geoIpSetMap.view.mapValues {
       _.map { cidr =>
-        // the geoip data doesn't use this field but we still check it
+        // the geoip data doesn't use this field, but we still check it
         // to make sure this behavior is still the same in the future
         assert(cidr.ipAddr.isEmpty)
 

@@ -1,2 +1,2 @@
-addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.4.1")
-addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.10.4")
+addSbtPlugin("org.typelevel" % "sbt-tpolecat" % "0.5.2")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.14.2")

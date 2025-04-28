@@ -4,7 +4,7 @@ import com.comcast.ip4s.Hostname
 import dird.protobuf.domains.{Domain, GeoSiteList}
 
 import java.io.FileInputStream
-import java.net.URL
+import java.net.URI
 import scala.util.Using
 
 type DomainRules = Map[String, Map[String, Seq[String]]]
@@ -14,7 +14,7 @@ object DomainRulesStore:
   private val geoSitesLocalDataPath = "data/geosite.dat"
   def load(useLocalDataFile: Boolean): DomainRules =
     val geoSites =
-      Using.resource(if useLocalDataFile then FileInputStream(geoSitesLocalDataPath) else URL(geoSitesDataUrl).openStream) {
+      Using.resource(if useLocalDataFile then FileInputStream(geoSitesLocalDataPath) else URI.create(geoSitesDataUrl).toURL.openStream) {
         in => GeoSiteList.parseFrom(in)
       }
     toDomainRules(geoSites)

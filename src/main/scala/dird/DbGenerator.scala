@@ -45,7 +45,6 @@ def generateDb(domainRules: DomainRules, ipSetRules: IpSetRules): Unit =
       s"inserted domain tags' count $insertDomainTypesCount doesn't not equal to domain tags' count ${domainRules.size} from data"
     )
     val insertDomainsCount = domainsPrepareStmt.executeBatch().sum
-    val domainsCount = domainRules.map(_._2.map(_._1.length).sum).sum
     assert(
       insertDomainsCount == totalInsertedDomainRows,
       s"inserted domains' row count $insertDomainsCount doesn't not equal to domains' row count $totalInsertedDomainRows from data"
